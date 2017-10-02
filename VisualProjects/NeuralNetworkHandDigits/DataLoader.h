@@ -7,5 +7,5 @@ public:
 	~DataLoader() = default;
 
 private:
-
+	int ConvertToInt(int value);
 };
