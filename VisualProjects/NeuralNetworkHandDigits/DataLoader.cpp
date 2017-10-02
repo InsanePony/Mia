@@ -58,6 +58,29 @@ std::vector<std::vector<unsigned int>> DataLoader::LoadFile(std::string const& r
 	return std::vector<std::vector<unsigned int>>();
 }
 
+void DataLoader::PrintImage(std::vector<unsigned int> image)
+{
+	int count = 0;
+
+	for (int idx = 0; idx < 784; ++idx)
+	{
+		++count;
+
+		std::cout << image[idx] << " ";
+
+		if (image[idx] < 10)
+			std::cout << " ";
+		if (image[idx] < 100)
+			std::cout << " ";
+
+		if (count == 28)
+		{
+			std::cout << "\n" << std::endl;
+			count = 0;
+		}
+	}
+}
+
 int DataLoader::ConvertToInt(int value)
 {
 	unsigned char c1, c2, c3, c4;

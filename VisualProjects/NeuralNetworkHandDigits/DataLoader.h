@@ -11,6 +11,8 @@ public:
 
 	std::vector<std::vector<unsigned int>> LoadFile(std::string const& relativeFilePath, int numberOfImages);
 
+	void PrintImage(std::vector<unsigned int> image);
+
 private:
 	int ConvertToInt(int value);
 };
