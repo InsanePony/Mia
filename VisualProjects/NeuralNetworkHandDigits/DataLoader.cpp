@@ -92,3 +92,11 @@ int DataLoader::ConvertToInt(int value)
 
 	return ((int)c1 << 24) + ((int)c2 << 16) + ((int)c3 << 8) + c4;
 }
+std::vector<unsigned int> DataLoader::VectorizeLabel(unsigned int value)
+{
+	std::vector<unsigned int> vectorizedLabel = std::vector<unsigned int>(10, 0);
+
+	vectorizedLabel[value] = 1;
+
+	return vectorizedLabel;
+}

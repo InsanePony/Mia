@@ -15,4 +15,5 @@ public:
 
 private:
 	int ConvertToInt(int value);
+	std::vector<unsigned int> VectorizeLabel(unsigned int value);
 };
