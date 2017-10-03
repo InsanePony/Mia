@@ -9,11 +9,11 @@ int main()
 
 	DataLoader* loader = new DataLoader();
 
-	std::vector<std::vector<unsigned int>> data = loader->LoadFile("../../MNIST data/train-data-pixels-value", 1000);
+	std::vector<std::array<std::vector<unsigned int>, 2>> data = loader->LoadData("../../MNIST data/train-data-pixels-value", "../../MNIST data/train-data-numbers", 1000);
 
 	/*for (int idx = 0; idx < 1000; ++idx)
 	{
-		loader->PrintImage(data[idx]);
+		loader->PrintImage(data[idx][0]);
 
 		Sleep(1000);
 		system("cls");

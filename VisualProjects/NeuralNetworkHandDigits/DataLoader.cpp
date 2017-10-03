@@ -3,11 +3,13 @@
 
 #include "DataLoader.h"
 
-std::vector<std::vector<unsigned int>> DataLoader::LoadFile(std::string const& relativeFilePath, int numberOfImages)
+std::vector<std::array<std::vector<unsigned int>, 2>> DataLoader::LoadData(std::string const& imagesFilePath, std::string const& labelsFilePath, int numberOfImages)
 {
-	std::cout << "Open file : " << relativeFilePath << std::endl;
+	std::cout << "Open file : " << imagesFilePath << std::endl;
 
-	std::ifstream file(relativeFilePath, std::ios::binary);
+	std::vector<std::vector<unsigned int>> images;
+	std::vector<std::vector<unsigned int>> labels;
+	std::ifstream file(imagesFilePath, std::ios::binary);
 
 	if (file.is_open())
 	{
@@ -22,7 +24,7 @@ std::vector<std::vector<unsigned int>> DataLoader::LoadFile(std::string const& r
 		if (nbImagesInFile < numberOfImages)
 		{
 			std::cout << "Not enough images in file" << std::endl;
-			return std::vector<std::vector<unsigned int>>();
+			abort();
 		}
 
 		int nbRows = 0;
@@ -35,8 +37,7 @@ std::vector<std::vector<unsigned int>> DataLoader::LoadFile(std::string const& r
 
 		int nbPixels = nbRows * nbColumns;
 
-		std::vector<std::vector<unsigned int>> data;
-		data.resize(numberOfImages, std::vector<unsigned int>(nbPixels));
+		images.resize(numberOfImages, std::vector<unsigned int>(nbPixels));
 
 		for (int imageIdx = 0; imageIdx < numberOfImages; ++imageIdx)
 		{
@@ -46,16 +47,63 @@ std::vector<std::vector<unsigned int>> DataLoader::LoadFile(std::string const& r
 				{
 					unsigned char pixelColor = 0;
 					file.read((char*)&pixelColor, 1);
-					data[imageIdx][(rowIdx * nbRows) + columnIdx] = (unsigned int)pixelColor;
+					images[imageIdx][(rowIdx * nbRows) + columnIdx] = (unsigned int)pixelColor;
 				}
 			}
 		}
 
-		return data;
+		file.close();
+	}
+	else
+	{
+		std::cout << "Can't open file : " << imagesFilePath << std::endl;
+		abort();
 	}
 
-	std::cout << "Can't open file" << std::endl;
-	return std::vector<std::vector<unsigned int>>();
+	std::cout << "Open file : " << labelsFilePath << std::endl;
+
+	file.open(labelsFilePath, std::ios::binary);
+
+	if (file.is_open())
+	{
+		int magicNumber = 0;
+		file.read((char*)&magicNumber, 4);
+		magicNumber = ConvertToInt(magicNumber);
+
+		int nbLabels = 0;
+		file.read((char*)&nbLabels, 4);
+		nbLabels = ConvertToInt(nbLabels);
+
+		if (nbLabels < numberOfImages)
+		{
+			std::cout << "Not enough labels in file" << std::endl;
+			abort();
+		}
+
+		labels.resize(numberOfImages, std::vector<unsigned int>(10));
+
+		for (int labelIdx = 0; labelIdx < numberOfImages; ++labelIdx)
+		{
+			unsigned char label = 0;
+			file.read((char*)&label, 1);
+			labels[labelIdx] = VectorizeLabel((unsigned int)label);
+		}
+
+		file.close();
+	}
+	else
+	{
+		std::cout << "Can't open file : " << labelsFilePath << std::endl;
+		abort();
+	}
+
+	std::vector<std::array<std::vector<unsigned int>, 2>> data;
+	data.resize(numberOfImages);
+
+	for (int dataIdx = 0; dataIdx < numberOfImages; ++dataIdx)
+		data[dataIdx] = { images[dataIdx], labels[dataIdx] };
+
+	return data;
 }
 
 void DataLoader::PrintImage(std::vector<unsigned int> image)

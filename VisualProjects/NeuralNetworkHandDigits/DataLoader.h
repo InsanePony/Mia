@@ -1,6 +1,7 @@
 #pragma once
 
 #include <vector>
+#include <array>
 #include <string>
 
 class DataLoader
@@ -9,7 +10,7 @@ public:
 	DataLoader() = default;
 	~DataLoader() = default;
 
-	std::vector<std::vector<unsigned int>> LoadFile(std::string const& relativeFilePath, int numberOfImages);
+	std::vector<std::array<std::vector<unsigned int>, 2>> LoadData(std::string const& imagesFilePath, std::string const& labelsFilePath, int numberOfImages);
 
 	void PrintImage(std::vector<unsigned int> image);
 
