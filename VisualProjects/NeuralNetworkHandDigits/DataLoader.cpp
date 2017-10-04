@@ -4,13 +4,56 @@
 
 #include "DataLoader.h"
 
-std::vector<std::array<std::vector<unsigned int>, 2>> DataLoader::LoadData(std::string const& imagesFilePath, std::string const& labelsFilePath, int numberOfImages)
+std::vector<std::array<std::vector<unsigned int>, 2>> DataLoader::LoadData(std::string const& imagesFilePath, std::string const& labelsFilePath, int desiredNumberData)
 {
-	std::cout << "Open file : " << imagesFilePath << std::endl;
+	std::vector<std::vector<unsigned int>> images = LoadImages(imagesFilePath, desiredNumberData);
+	std::vector<std::vector<unsigned int>> labels = LoadLabels(labelsFilePath, desiredNumberData);
+
+	std::vector<std::array<std::vector<unsigned int>, 2>> data;
+	data.resize(desiredNumberData);
+
+	for (int dataIdx = 0; dataIdx < desiredNumberData; ++dataIdx)
+		data[dataIdx] = { images[dataIdx], labels[dataIdx] };
+
+	return data;
+}
+
+void DataLoader::PrintImage(std::vector<unsigned int> image)
+{
+	int count = 0;
+
+	for (int idx = 0; idx < 784; ++idx)
+	{
+		++count;
+
+		std::cout << image[idx] << " ";
+
+		if (image[idx] < 10)
+			std::cout << " ";
+		if (image[idx] < 100)
+			std::cout << " ";
+
+		if (count == 28)
+		{
+			std::cout << "\n" << std::endl;
+			count = 0;
+		}
+	}
+}
+void DataLoader::PrintLabel(std::vector<unsigned int> label)
+{
+	std::vector<unsigned int>::iterator it = std::find(label.begin(), label.end(), 1);
+
+	std::cout << it - label.begin() << std::endl;
+}
+
+std::vector<std::vector<unsigned int>> DataLoader::LoadImages(std::string const& filePath, int numberOfImages)
+{
+	std::cout << "Open file : " << filePath << std::endl;
 
 	std::vector<std::vector<unsigned int>> images;
-	std::vector<std::vector<unsigned int>> labels;
-	std::ifstream file(imagesFilePath, std::ios::binary);
+
+	std::ifstream file(filePath, std::ios::binary);
 
 	if (file.is_open())
 	{
@@ -57,13 +100,19 @@ std::vector<std::array<std::vector<unsigned int>, 2>> DataLoader::LoadData(std::
 	}
 	else
 	{
-		std::cout << "Can't open file : " << imagesFilePath << std::endl;
+		std::cout << "Can't open file : " << filePath << std::endl;
 		abort();
 	}
 
-	std::cout << "Open file : " << labelsFilePath << std::endl;
+	return images;
+}
+std::vector<std::vector<unsigned int>> DataLoader::LoadLabels(std::string const& filePath, int numberOfLabels)
+{
+	std::cout << "Open file : " << filePath << std::endl;
 
-	file.open(labelsFilePath, std::ios::binary);
+	std::vector<std::vector<unsigned int>> labels;
+
+	std::ifstream file(filePath, std::ios::binary);
 
 	if (file.is_open())
 	{
@@ -75,15 +124,15 @@ std::vector<std::array<std::vector<unsigned int>, 2>> DataLoader::LoadData(std::
 		file.read((char*)&nbLabels, 4);
 		nbLabels = ConvertToInt(nbLabels);
 
-		if (nbLabels < numberOfImages)
+		if (nbLabels < numberOfLabels)
 		{
 			std::cout << "Not enough labels in file" << std::endl;
 			abort();
 		}
 
-		labels.resize(numberOfImages, std::vector<unsigned int>(10));
+		labels.resize(numberOfLabels, std::vector<unsigned int>(10));
 
-		for (int labelIdx = 0; labelIdx < numberOfImages; ++labelIdx)
+		for (int labelIdx = 0; labelIdx < numberOfLabels; ++labelIdx)
 		{
 			unsigned char label = 0;
 			file.read((char*)&label, 1);
@@ -94,46 +143,11 @@ std::vector<std::array<std::vector<unsigned int>, 2>> DataLoader::LoadData(std::
 	}
 	else
 	{
-		std::cout << "Can't open file : " << labelsFilePath << std::endl;
+		std::cout << "Can't open file : " << filePath << std::endl;
 		abort();
 	}
 
-	std::vector<std::array<std::vector<unsigned int>, 2>> data;
-	data.resize(numberOfImages);
-
-	for (int dataIdx = 0; dataIdx < numberOfImages; ++dataIdx)
-		data[dataIdx] = { images[dataIdx], labels[dataIdx] };
-
-	return data;
-}
-
-void DataLoader::PrintImage(std::vector<unsigned int> image)
-{
-	int count = 0;
-
-	for (int idx = 0; idx < 784; ++idx)
-	{
-		++count;
-
-		std::cout << image[idx] << " ";
-
-		if (image[idx] < 10)
-			std::cout << " ";
-		if (image[idx] < 100)
-			std::cout << " ";
-
-		if (count == 28)
-		{
-			std::cout << "\n" << std::endl;
-			count = 0;
-		}
-	}
-}
-void DataLoader::PrintLabel(std::vector<unsigned int> label)
-{
-	std::vector<unsigned int>::iterator it = std::find(label.begin(), label.end(), 1);
-
-	std::cout << it - label.begin() << std::endl;
+	return labels;
 }
 
 int DataLoader::ConvertToInt(int value)
