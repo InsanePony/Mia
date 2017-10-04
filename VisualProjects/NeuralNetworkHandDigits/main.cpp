@@ -19,6 +19,14 @@ int main()
 		system("cls");
 	}*/
 
+	/*for (int idx = 0; idx < 1000; ++idx)
+	{
+		loader->PrintLabel(data[idx][1]);
+
+		Sleep(1000);
+		system("cls");
+	}*/
+
 	std::cin.ignore();
 	return 0;
 }

@@ -1,5 +1,6 @@
 #include <iostream>
 #include <fstream>
+#include <algorithm>
 
 #include "DataLoader.h"
 
@@ -127,6 +128,12 @@ void DataLoader::PrintImage(std::vector<unsigned int> image)
 			count = 0;
 		}
 	}
+}
+void DataLoader::PrintLabel(std::vector<unsigned int> label)
+{
+	std::vector<unsigned int>::iterator it = std::find(label.begin(), label.end(), 1);
+
+	std::cout << it - label.begin() << std::endl;
 }
 
 int DataLoader::ConvertToInt(int value)
