@@ -2,6 +2,7 @@
 #include <windows.h>
 
 #include "DataLoader.h"
+#include "Network.h"
 
 int main()
 {
@@ -26,6 +27,8 @@ int main()
 		Sleep(1000);
 		system("cls");
 	}*/
+
+	Network* net = new Network({ 2, 3, 2 });
 
 	std::cin.ignore();
 	return 0;
