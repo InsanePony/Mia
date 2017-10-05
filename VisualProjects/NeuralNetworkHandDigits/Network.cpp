@@ -18,7 +18,7 @@ Network::Network(std::vector<unsigned int> networkForm)
 		for (unsigned int j = 0; j < networkForm[i]; ++j)
 			currLayerBiases.push_back(distribution(generator));
 
-		m_vvdBiases.push_back(currLayerBiases);
+		m_vvfBiases.push_back(currLayerBiases);
 	}
 
 	for (unsigned int i = 0; i < m_uiNumberLayers - 1; ++i)
@@ -28,8 +28,42 @@ Network::Network(std::vector<unsigned int> networkForm)
 		for (unsigned int j = 0; j < networkForm[i] * networkForm[i + 1]; ++j)
 			currLayerWeights.push_back(distribution(generator));
 
-		m_vvdWeights.push_back(currLayerWeights);
+		m_vvfWeights.push_back(currLayerWeights);
 	}
+}
+
+std::vector<float> Network::OutputFromInput(std::vector<float> &inputs)
+{
+	std::vector<float> outputs;
+
+	// Loop on each layer that can provide an output
+	for (unsigned int layerIdx = 1; layerIdx < m_uiNumberLayers; ++layerIdx)
+	{
+		outputs.clear();
+
+		// loop on each neuron
+		for (unsigned int neuronIdx = 0; neuronIdx < m_vuiNetwork[layerIdx]; ++neuronIdx)
+		{
+			unsigned int numberInputs = m_vuiNetwork[layerIdx - 1];
+
+			float sigmaWeightsInputs = 0.f;
+
+			// loop on each input
+			for (unsigned int inputIdx = 0; inputIdx < numberInputs; ++inputIdx)
+			{
+				int weightIdx = inputIdx + (neuronIdx * numberInputs);
+				sigmaWeightsInputs += m_vvfWeights[layerIdx][weightIdx] * inputs[weightIdx];
+			}
+
+			sigmaWeightsInputs += m_vvfBiases[layerIdx][neuronIdx];
+
+			outputs.push_back(Sigmoid(sigmaWeightsInputs));
+		}
+
+		inputs = outputs;
+	}
+
+	return outputs;
 }
 
 float Network::Sigmoid(float value)
