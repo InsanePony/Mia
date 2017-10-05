@@ -4,6 +4,8 @@
 
 Network::Network(std::vector<unsigned int> networkForm)
 {
+	m_vuiNetwork = networkForm;
+
 	m_uiNumberLayers = (unsigned int)networkForm.size();
 
 	std::default_random_engine generator;

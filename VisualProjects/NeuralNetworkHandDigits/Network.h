@@ -12,6 +12,7 @@ public:
 private:
 	float Sigmoid(float value);
 
+	std::vector<unsigned int> m_vuiNetwork;
 	unsigned int m_uiNumberLayers;
 
 	std::vector<std::vector<float>> m_vvdBiases;
