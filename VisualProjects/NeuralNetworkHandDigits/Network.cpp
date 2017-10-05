@@ -32,5 +32,5 @@ Network::Network(std::vector<unsigned int> networkForm)
 
 float Network::Sigmoid(float value)
 {
-	return 1.f / (1.f + exp(value));
+	return 1.f / (1.f + exp(-value));
 }
