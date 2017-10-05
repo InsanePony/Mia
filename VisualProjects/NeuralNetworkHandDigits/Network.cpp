@@ -29,3 +29,8 @@ Network::Network(std::vector<unsigned int> networkForm)
 		m_vvdWeights.push_back(currLayerWeights);
 	}
 }
+
+float Network::Sigmoid(float value)
+{
+	return 1.f / (1.f + exp(value));
+}

@@ -10,6 +10,8 @@ public:
 	~Network() = default;
 
 private:
+	float Sigmoid(float value);
+
 	unsigned int m_uiNumberLayers;
 
 	std::vector<std::vector<float>> m_vvdBiases;
