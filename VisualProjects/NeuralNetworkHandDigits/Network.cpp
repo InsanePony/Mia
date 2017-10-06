@@ -70,3 +70,7 @@ float Network::Sigmoid(float value)
 {
 	return 1.f / (1.f + exp(-value));
 }
+float Network::SigmoidDerivative(float value)
+{
+	return Sigmoid(value) * (1.f - Sigmoid(value));
+}

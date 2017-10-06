@@ -13,6 +13,7 @@ private:
 	std::vector<float> OutputFromInput(std::vector<float> inputs);
 
 	float Sigmoid(float value);
+	float SigmoidDerivative(float value);
 
 	std::vector<unsigned int> m_vuiNetwork;
 	unsigned int m_uiNumberLayers;
