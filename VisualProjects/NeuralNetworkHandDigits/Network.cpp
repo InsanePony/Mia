@@ -32,7 +32,7 @@ Network::Network(std::vector<unsigned int> networkForm)
 	}
 }
 
-std::vector<float> Network::OutputFromInput(std::vector<float> &inputs)
+std::vector<float> Network::OutputFromInput(std::vector<float> inputs)
 {
 	std::vector<float> outputs;
 

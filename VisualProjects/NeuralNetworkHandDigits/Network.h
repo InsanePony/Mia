@@ -10,7 +10,7 @@ public:
 	~Network() = default;
 
 private:
-	std::vector<float> OutputFromInput(std::vector<float> &inputs);
+	std::vector<float> OutputFromInput(std::vector<float> inputs);
 
 	float Sigmoid(float value);
 
