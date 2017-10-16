@@ -1,6 +1,7 @@
 #pragma once
 
 #include <vector>
+#include <array>
 
 class Network
 {
@@ -11,6 +12,7 @@ public:
 
 private:
 	std::vector<float> OutputFromInput(std::vector<float> inputs);
+	void UpdateNetworkFromBatch(std::vector<std::array<std::vector<unsigned int>, 2>> const& batch, float learningRate);
 
 	float Sigmoid(float value);
 	float SigmoidDerivative(float value);

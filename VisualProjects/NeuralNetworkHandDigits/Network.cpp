@@ -1,4 +1,5 @@
 #include <random>
+#include <algorithm>
 
 #include "Network.h"
 
@@ -64,6 +65,57 @@ std::vector<float> Network::OutputFromInput(std::vector<float> inputs)
 	}
 
 	return outputs;
+}
+void Network::UpdateNetworkFromBatch(std::vector<std::array<std::vector<unsigned int>, 2>> const& batch, float learningRate)
+{
+	// create a copy of weights but filled with 0
+	std::vector<std::vector<float>> updatedWeights = m_vvfWeights;
+
+	int weightsSize = (int)updatedWeights.size();
+	for (int idx = 0; idx < weightsSize; ++idx)
+		std::fill(updatedWeights[idx].begin(), updatedWeights[idx].end(), 0.f);
+
+	// create a copy of biases but filled with 0
+	std::vector<std::vector<float>> updatedBiases = m_vvfBiases;
+
+	int biasesSize = (int)updatedBiases.size();
+	for (int idx = 0; idx < biasesSize; ++idx)
+		std::fill(updatedBiases[idx].begin(), updatedBiases[idx].end(), 0.f);
+
+	// loop on each pair of batch
+	int batchSize = (int)batch.size();
+	for (int pairIdx = 0; pairIdx < batchSize; ++pairIdx)
+	{
+		std::vector<unsigned int> image = batch[pairIdx][0];
+		std::vector<unsigned int> label = batch[pairIdx][1];
+
+		std::vector<std::vector<float>> deltaWeights = updatedWeights;
+		std::vector<std::vector<float>> deltaBiases = updatedBiases;
+
+		//Backpropagation(deltaWeights, deltaBiases, image, label);
+
+		// sum of weights given by backpropagation (same for biases)
+		for (int neuronWeightsIdx = 0; neuronWeightsIdx < weightsSize; ++neuronWeightsIdx)
+		{
+			int neuronWeightsSize = (int)updatedWeights[neuronWeightsIdx].size();
+			for (int weightIdx = 0; weightIdx < neuronWeightsSize; ++weightIdx)
+			{
+				updatedWeights[neuronWeightsIdx][weightIdx] += deltaWeights[neuronWeightsIdx][weightIdx];
+				updatedBiases[neuronWeightsIdx][weightIdx] += deltaBiases[neuronWeightsIdx][weightIdx];
+			}
+		}
+	}
+
+	// new weights and biases by applying stochastic gradient descent
+	for (int neuronWeightsIdx = 0; neuronWeightsIdx < weightsSize; ++neuronWeightsIdx)
+	{
+		int neuronWeightsSize = (int)updatedWeights[neuronWeightsIdx].size();
+		for (int weightIdx = 0; weightIdx < neuronWeightsSize; ++weightIdx)
+		{
+			m_vvfWeights[neuronWeightsIdx][weightIdx] -= (learningRate / batchSize) * updatedWeights[neuronWeightsIdx][weightIdx];
+			m_vvfBiases[neuronWeightsIdx][weightIdx] -= (learningRate / batchSize) * updatedBiases[neuronWeightsIdx][weightIdx];
+		}
+	}
 }
 
 float Network::Sigmoid(float value)
