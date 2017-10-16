@@ -89,8 +89,15 @@ void Network::UpdateNetworkFromBatch(std::vector<std::array<std::vector<unsigned
 		std::vector<unsigned int> image = batch[pairIdx][0];
 		std::vector<unsigned int> label = batch[pairIdx][1];
 
-		std::vector<std::vector<float>> deltaWeights = updatedWeights;
-		std::vector<std::vector<float>> deltaBiases = updatedBiases;
+		std::vector<std::vector<float>> deltaWeights = m_vvfWeights;
+
+		for (int idx = 0; idx < weightsSize; ++idx)
+			std::fill(deltaWeights[idx].begin(), deltaWeights[idx].end(), 0.f);
+
+		std::vector<std::vector<float>> deltaBiases = m_vvfBiases;
+
+		for (int idx = 0; idx < biasesSize; ++idx)
+			std::fill(deltaBiases[idx].begin(), deltaBiases[idx].end(), 0.f);
 
 		//Backpropagation(deltaWeights, deltaBiases, image, label);
 
