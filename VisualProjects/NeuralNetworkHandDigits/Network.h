@@ -14,6 +14,7 @@ private:
 	std::vector<float> OutputFromInput(std::vector<float> inputs);
 	void UpdateNetworkFromBatch(std::vector<std::array<std::vector<unsigned int>, 2>> const& batch, float learningRate);
 
+	std::vector<float> CostFunction(std::vector<float> const& networkOutput, std::vector<float> const& expectedOutput);
 	float Sigmoid(float value);
 	float SigmoidDerivative(float value);
 

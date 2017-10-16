@@ -2,6 +2,7 @@
 #include <algorithm>
 
 #include "Network.h"
+#include "VectorOperators.h"
 
 Network::Network(std::vector<unsigned int> networkForm)
 {
@@ -125,6 +126,10 @@ void Network::UpdateNetworkFromBatch(std::vector<std::array<std::vector<unsigned
 	}
 }
 
+std::vector<float> Network::CostFunction(std::vector<float> const& networkOutput, std::vector<float> const& expectedOutput)
+{
+	return networkOutput - expectedOutput;
+}
 float Network::Sigmoid(float value)
 {
 	return 1.f / (1.f + exp(-value));
