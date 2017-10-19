@@ -69,6 +69,122 @@ std::vector<float> Network::OutputFromInput(std::vector<float> inputs)
 
 	return outputs;
 }
+void Network::Backpropagation(std::vector<std::vector<float>> &weights, std::vector<std::vector<float>> &biases, std::vector<unsigned int> image, std::vector<unsigned int> label)
+{
+	std::vector<float> activation(image.begin(), image.end());
+	std::vector<float> expectedOutput(label.begin(), label.end());
+
+	std::vector<float> outputs = std::vector<float>();
+
+	std::vector<std::vector<float>> activations = std::vector<std::vector<float>>();
+	activations.push_back(activation);
+
+	std::vector<float> sigmasWeightsActivations = std::vector<float>();
+	std::vector<std::vector<float>> zVectors = std::vector<std::vector<float>>();
+
+	// similar to OutputFromInput function
+	for (unsigned int layerIdx = 1; layerIdx < m_uiNumberLayers; ++layerIdx)
+	{
+		outputs.clear();
+		sigmasWeightsActivations.clear();
+
+		unsigned int numberNeuron = m_vuiNetwork[layerIdx];
+
+		for (unsigned int neuronIdx = 0; neuronIdx < numberNeuron; ++neuronIdx)
+		{
+			unsigned int numberActivation = m_vuiNetwork[layerIdx - 1];
+
+			float sigmaWeightsActivations = 0.f;
+
+			for (unsigned int activationIdx = 0; activationIdx < numberActivation; ++activationIdx)
+			{
+				unsigned int weightIdx = activationIdx + (neuronIdx * numberActivation);
+
+				sigmaWeightsActivations += m_vvfWeights[layerIdx][weightIdx] * activation[weightIdx];
+			}
+
+			sigmaWeightsActivations += m_vvfBiases[layerIdx][neuronIdx];
+
+			sigmasWeightsActivations.push_back(sigmaWeightsActivations);
+			outputs.push_back(Sigmoid(sigmaWeightsActivations));
+		}
+
+		activation = outputs;
+
+		zVectors.push_back(sigmasWeightsActivations);
+		activations.push_back(activation);
+	}
+
+	// backward pass
+	std::vector<float> cost = CostFunction(activations.back(), expectedOutput);
+	std::vector<float> delta = std::vector<float>();
+
+	std::vector<float> lastZVector = zVectors.back();
+	int size = (int)lastZVector.size();
+	for (int idx = 0; idx < size; ++idx)
+		delta.push_back(cost[idx] * lastZVector[idx]);
+	
+	biases.back() = delta;
+
+
+	std::vector<float> deltaWeight;
+	deltaWeight.resize(m_vvfWeights.back().size());
+
+	int activationsSize = (int)activations.size();
+	std::vector<float> beforeLastActivation = activations[activationsSize - 2];
+	int beforeLastActivationSize = (int)beforeLastActivation.size();
+	size = (int)delta.size() * beforeLastActivationSize;
+	for (int idx = 0; idx < size; ++idx)
+	{
+		int rowIdx = idx / beforeLastActivationSize;
+		int columnIdx = idx % beforeLastActivationSize;
+
+		deltaWeight[idx] = delta[rowIdx] * beforeLastActivation[columnIdx];
+	}
+
+	weights.back() = deltaWeight;
+
+	for (unsigned int negativeLayerIdx = 2; negativeLayerIdx < m_uiNumberLayers; ++negativeLayerIdx)
+	{
+		int layerIdx = activationsSize % negativeLayerIdx;
+		std::vector<float> zVector = zVectors[layerIdx];
+		
+		std::vector<float> transposedWeights = Utility::Transpose(m_vvfWeights[layerIdx], m_vuiNetwork[layerIdx + 1], m_vuiNetwork[layerIdx]);
+
+		int numberNeuron = m_vuiNetwork[layerIdx];
+		std::vector<float> currDelta;
+		currDelta.resize(numberNeuron);
+
+		for (int neuronIdx = 0; neuronIdx < numberNeuron; ++neuronIdx)
+		{
+			float sigmoidDerivativeZVector = SigmoidDerivative(zVector[neuronIdx]);
+
+			int nbColumn = m_vuiNetwork[layerIdx + 1];
+			for (int columnIdx = 0; columnIdx < nbColumn; ++columnIdx)
+				currDelta[neuronIdx] += transposedWeights[neuronIdx * nbColumn + columnIdx] * delta[columnIdx];
+
+			currDelta[neuronIdx] *= sigmoidDerivativeZVector;
+		}
+
+		biases[layerIdx] = currDelta;
+
+		deltaWeight.clear();
+		deltaWeight.resize(m_vvfWeights[layerIdx - 1].size());
+
+		std::vector<float> currActivation = activations[layerIdx - 1];
+		int currActivationSize = (int)currActivation.size();
+		size = (int)delta.size() * currActivationSize;
+		for (int idx = 0; idx < size; ++idx)
+		{
+			int rowIdx = idx / currActivationSize;
+			int columnIdx = idx % currActivationSize;
+
+			deltaWeight[idx] = delta[rowIdx] * currActivation[columnIdx];
+		}
+
+		weights[layerIdx - 1] = deltaWeight;
+	}
+}
 void Network::UpdateNetworkFromBatch(std::vector<std::array<std::vector<unsigned int>, 2>> const& batch, float learningRate)
 {
 	// create a copy of weights but filled with 0
@@ -102,7 +218,7 @@ void Network::UpdateNetworkFromBatch(std::vector<std::array<std::vector<unsigned
 		for (int idx = 0; idx < biasesSize; ++idx)
 			std::fill(deltaBiases[idx].begin(), deltaBiases[idx].end(), 0.f);
 
-		//Backpropagation(deltaWeights, deltaBiases, image, label);
+		Backpropagation(deltaWeights, deltaBiases, image, label);
 
 		// sum of weights given by backpropagation (same for biases)
 		for (int neuronWeightsIdx = 0; neuronWeightsIdx < weightsSize; ++neuronWeightsIdx)

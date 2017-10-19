@@ -12,6 +12,7 @@ public:
 
 private:
 	std::vector<float> OutputFromInput(std::vector<float> inputs);
+	void Backpropagation(std::vector<std::vector<float>> &weights, std::vector<std::vector<float>> &biases, std::vector<unsigned int> image, std::vector<unsigned int> label);
 	void UpdateNetworkFromBatch(std::vector<std::array<std::vector<unsigned int>, 2>> const& batch, float learningRate);
 
 	std::vector<float> CostFunction(std::vector<float> const& networkOutput, std::vector<float> const& expectedOutput);
