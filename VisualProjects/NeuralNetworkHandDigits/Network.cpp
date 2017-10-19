@@ -43,17 +43,19 @@ std::vector<float> Network::OutputFromInput(std::vector<float> inputs)
 	{
 		outputs.clear();
 
+		unsigned int numberNeuron = m_vuiNetwork[layerIdx];
+
 		// loop on each neuron
-		for (unsigned int neuronIdx = 0; neuronIdx < m_vuiNetwork[layerIdx]; ++neuronIdx)
+		for (unsigned int neuronIdx = 0; neuronIdx < numberNeuron; ++neuronIdx)
 		{
-			unsigned int numberInputs = m_vuiNetwork[layerIdx - 1];
+			unsigned int numberInput = m_vuiNetwork[layerIdx - 1];
 
 			float sigmaWeightsInputs = 0.f;
 
 			// loop on each input
-			for (unsigned int inputIdx = 0; inputIdx < numberInputs; ++inputIdx)
+			for (unsigned int inputIdx = 0; inputIdx < numberInput; ++inputIdx)
 			{
-				int weightIdx = inputIdx + (neuronIdx * numberInputs);
+				unsigned int weightIdx = inputIdx + (neuronIdx * numberInput);
 				sigmaWeightsInputs += m_vvfWeights[layerIdx][weightIdx] * inputs[weightIdx];
 			}
 
