@@ -35,6 +35,32 @@ Network::Network(std::vector<unsigned int> networkForm)
 	}
 }
 
+void Network::StartLearning(std::vector<std::array<std::vector<float>, 2>> trainingData, unsigned int numberOfGenerations, float learningRate, unsigned int batchSize, std::vector<std::array<std::vector<float>, 2>> const& testData)
+{
+	// loop on each generation
+	for (unsigned int genIdx = 0; genIdx < numberOfGenerations; ++genIdx)
+	{
+		std::random_shuffle(trainingData.begin(), trainingData.end());
+		
+		unsigned int size = (unsigned int)trainingData.size() / batchSize;
+		for (unsigned int batchIdx = 0; batchIdx < size; ++batchIdx)
+		{
+			unsigned int startIdx = batchIdx * batchSize;
+			unsigned int endIdx = startIdx + batchSize;
+
+			UpdateNetworkFromBatch({ trainingData.begin() + startIdx, trainingData.begin() + endIdx }, learningRate);
+		}
+
+		if (testData.size() > 0)
+		{
+			std::cout << "Generation " << genIdx << " ";
+			Evaluate(testData);
+		}
+		else
+			std::cout << "Generation " << genIdx << " complete." << std::endl;
+	}
+}
+
 void Network::Evaluate(std::vector<std::array<std::vector<float>, 2>> const& data)
 {
 	unsigned int correctResults = 0;

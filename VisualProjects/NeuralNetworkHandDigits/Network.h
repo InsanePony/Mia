@@ -10,6 +10,9 @@ public:
 	Network(std::vector<unsigned int> networkForm);
 	~Network() = default;
 
+	// testData = used data to evaluate neural network after each generation
+	void StartLearning(std::vector<std::array<std::vector<float>, 2>> trainingData, unsigned int numberOfGenerations, float learningRate, unsigned int batchSize, std::vector<std::array<std::vector<float>, 2>> const& testData = {}); // = stochastic gradient descent
+
 	void Evaluate(std::vector<std::array<std::vector<float>, 2>> const& data);
 
 private:
