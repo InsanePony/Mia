@@ -10,6 +10,8 @@ public:
 	Network(std::vector<unsigned int> networkForm);
 	~Network() = default;
 
+	void Evaluate(std::vector<std::array<std::vector<float>, 2>> const& data);
+
 private:
 	std::vector<float> OutputFromInput(std::vector<float> inputs);
 	void Backpropagation(std::vector<std::vector<float>> &weights, std::vector<std::vector<float>> &biases, std::vector<unsigned int> image, std::vector<unsigned int> label);

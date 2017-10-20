@@ -1,5 +1,6 @@
 #include <random>
 #include <algorithm>
+#include <iostream>
 
 #include "Network.h"
 #include "VectorOperators.h"
@@ -32,6 +33,27 @@ Network::Network(std::vector<unsigned int> networkForm)
 
 		m_vvfWeights.push_back(currLayerWeights);
 	}
+}
+
+void Network::Evaluate(std::vector<std::array<std::vector<float>, 2>> const& data)
+{
+	unsigned int correctResults = 0;
+
+	unsigned int size = (unsigned int)data.size();
+	for (unsigned int idx = 0; idx < size; ++idx)
+	{
+		std::vector<float> inputs = data[idx][0];
+		std::vector<float> label = data[idx][1];
+
+		std::vector<float> outputs = OutputFromInput(inputs);
+
+		unsigned int networkNumber = (unsigned int)std::distance(outputs.begin(), std::max_element(outputs.begin(), outputs.end()));
+		unsigned int labelNumber = (unsigned int)std::distance(label.begin(), std::max_element(label.begin(), label.end()));
+		if (networkNumber == labelNumber)
+			++correctResults;
+	}
+
+	std::cout << correctResults << " / " << size << std::endl;
 }
 
 std::vector<float> Network::OutputFromInput(std::vector<float> inputs)
