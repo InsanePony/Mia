@@ -91,7 +91,7 @@ std::vector<float> Network::OutputFromInput(std::vector<float> inputs)
 
 	return outputs;
 }
-void Network::Backpropagation(std::vector<std::vector<float>> &weights, std::vector<std::vector<float>> &biases, std::vector<unsigned int> image, std::vector<unsigned int> label)
+void Network::Backpropagation(std::vector<std::vector<float>> &weights, std::vector<std::vector<float>> &biases, std::vector<float> image, std::vector<float> label)
 {
 	std::vector<float> activation(image.begin(), image.end());
 	std::vector<float> expectedOutput(label.begin(), label.end());
@@ -207,7 +207,7 @@ void Network::Backpropagation(std::vector<std::vector<float>> &weights, std::vec
 		weights[layerIdx - 1] = deltaWeight;
 	}
 }
-void Network::UpdateNetworkFromBatch(std::vector<std::array<std::vector<unsigned int>, 2>> const& batch, float learningRate)
+void Network::UpdateNetworkFromBatch(std::vector<std::array<std::vector<float>, 2>> const& batch, float learningRate)
 {
 	// create a copy of weights but filled with 0
 	std::vector<std::vector<float>> updatedWeights = m_vvfWeights;
@@ -227,8 +227,8 @@ void Network::UpdateNetworkFromBatch(std::vector<std::array<std::vector<unsigned
 	int batchSize = (int)batch.size();
 	for (int pairIdx = 0; pairIdx < batchSize; ++pairIdx)
 	{
-		std::vector<unsigned int> image = batch[pairIdx][0];
-		std::vector<unsigned int> label = batch[pairIdx][1];
+		std::vector<float> image = batch[pairIdx][0];
+		std::vector<float> label = batch[pairIdx][1];
 
 		std::vector<std::vector<float>> deltaWeights = m_vvfWeights;
 

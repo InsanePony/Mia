@@ -10,7 +10,7 @@ int main()
 
 	DataLoader* loader = new DataLoader();
 
-	std::vector<std::array<std::vector<unsigned int>, 2>> data = loader->LoadData("../../MNIST data/train-data-pixels-value", "../../MNIST data/train-data-numbers", 1000);
+	std::vector<std::array<std::vector<float>, 2>> data = loader->LoadData("../../MNIST data/train-data-pixels-value", "../../MNIST data/train-data-numbers", 1000);
 
 	/*for (int idx = 0; idx < 1000; ++idx)
 	{
