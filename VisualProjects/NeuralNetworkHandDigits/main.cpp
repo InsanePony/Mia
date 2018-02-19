@@ -3,6 +3,7 @@
 
 #include "DataLoader.h"
 #include "Network.h"
+#include "VectorOperators.h"
 
 int main()
 {
@@ -10,7 +11,11 @@ int main()
 
 	DataLoader* loader = new DataLoader();
 
-	std::vector<std::array<std::vector<float>, 2>> data = loader->LoadData("../../MNIST data/train-data-pixels-value", "../../MNIST data/train-data-numbers", 1000);
+	std::vector<std::array<std::vector<double>, 2>> data = loader->LoadData("../../MNIST data/train-data-pixels-value", "../../MNIST data/train-data-numbers", 60000);
+	std::vector<std::array<std::vector<double>, 2>> trainData(data.begin(), data.begin() + 5000);
+	std::vector<std::array<std::vector<double>, 2>> testData(data.begin() + 58000, data.end());
+
+	std::vector<std::array<std::vector<double>, 2>> evaluationData = loader->LoadData("../../MNIST data/test-data-pixels-value", "../../MNIST data/test-data-numbers", 10000);
 
 	/*for (int idx = 0; idx < 1000; ++idx)
 	{
@@ -28,7 +33,8 @@ int main()
 		system("cls");
 	}*/
 
-	Network* net = new Network({ 2, 3, 2 });
+	Network* net = new Network({ 784, 30, 10 });
+	net->StartLearning(trainData, 30, 1.0, 50, testData);
 
 	std::cin.ignore();
 	return 0;

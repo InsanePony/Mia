@@ -11,22 +11,22 @@ public:
 	~Network() = default;
 
 	// testData = used data to evaluate neural network after each generation
-	void StartLearning(std::vector<std::array<std::vector<float>, 2>> trainingData, unsigned int numberOfGenerations, float learningRate, unsigned int batchSize, std::vector<std::array<std::vector<float>, 2>> const& testData = {}); // = stochastic gradient descent
+	void StartLearning(std::vector<std::array<std::vector<double>, 2>> trainingData, unsigned int numberOfGenerations, double learningRate, unsigned int batchSize, std::vector<std::array<std::vector<double>, 2>> const& testData = {}); // = stochastic gradient descent
 
-	void Evaluate(std::vector<std::array<std::vector<float>, 2>> const& data);
+	void Evaluate(std::vector<std::array<std::vector<double>, 2>> const& data);
 
 private:
-	std::vector<float> OutputFromInput(std::vector<float> inputs);
-	void Backpropagation(std::vector<std::vector<float>> &weights, std::vector<std::vector<float>> &biases, std::vector<float> image, std::vector<float> label);
-	void UpdateNetworkFromBatch(std::vector<std::array<std::vector<float>, 2>> const& batch, float learningRate);
+	std::vector<double> OutputFromInput(std::vector<double> inputs);
+	void Backpropagation(std::vector<std::vector<double>> &weights, std::vector<std::vector<double>> &biases, std::vector<double> const& image, std::vector<double> const& label);
+	void UpdateNetworkFromBatch(std::vector<std::array<std::vector<double>, 2>> const& batch, double learningRate);
 
-	std::vector<float> CostFunction(std::vector<float> const& networkOutput, std::vector<float> const& expectedOutput);
-	float Sigmoid(float value);
-	float SigmoidDerivative(float value);
+	std::vector<double> CostFunction(std::vector<double> const& networkOutput, std::vector<double> const& expectedOutput);
+	double Sigmoid(double value);
+	double SigmoidDerivative(double value);
 
 	std::vector<unsigned int> m_vuiNetwork;
 	unsigned int m_uiNumberLayers;
 
-	std::vector<std::vector<float>> m_vvfBiases;
-	std::vector<std::vector<float>> m_vvfWeights;
+	std::vector<std::vector<double>> m_vvfBiases;
+	std::vector<std::vector<double>> m_vvfWeights;
 };

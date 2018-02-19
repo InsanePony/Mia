@@ -4,12 +4,12 @@
 
 #include "DataLoader.h"
 
-std::vector<std::array<std::vector<float>, 2>> DataLoader::LoadData(std::string const& imagesFilePath, std::string const& labelsFilePath, int desiredNumberData)
+std::vector<std::array<std::vector<double>, 2>> DataLoader::LoadData(std::string const& imagesFilePath, std::string const& labelsFilePath, int desiredNumberData)
 {
-	std::vector<std::vector<float>> images = LoadImages(imagesFilePath, desiredNumberData);
-	std::vector<std::vector<float>> labels = LoadLabels(labelsFilePath, desiredNumberData);
+	std::vector<std::vector<double>> images = LoadImages(imagesFilePath, desiredNumberData);
+	std::vector<std::vector<double>> labels = LoadLabels(labelsFilePath, desiredNumberData);
 
-	std::vector<std::array<std::vector<float>, 2>> data;
+	std::vector<std::array<std::vector<double>, 2>> data;
 	data.resize(desiredNumberData);
 
 	for (int dataIdx = 0; dataIdx < desiredNumberData; ++dataIdx)
@@ -18,7 +18,7 @@ std::vector<std::array<std::vector<float>, 2>> DataLoader::LoadData(std::string 
 	return data;
 }
 
-void DataLoader::PrintImage(std::vector<float> image)
+void DataLoader::PrintImage(std::vector<double> image)
 {
 	int count = 0;
 
@@ -40,18 +40,18 @@ void DataLoader::PrintImage(std::vector<float> image)
 		}
 	}
 }
-void DataLoader::PrintLabel(std::vector<float> label)
+void DataLoader::PrintLabel(std::vector<double> label)
 {
-	std::vector<float>::iterator it = std::find(label.begin(), label.end(), 1);
+	std::vector<double>::iterator it = std::find(label.begin(), label.end(), 1.f);
 
 	std::cout << it - label.begin() << std::endl;
 }
 
-std::vector<std::vector<float>> DataLoader::LoadImages(std::string const& filePath, int numberOfImages)
+std::vector<std::vector<double>> DataLoader::LoadImages(std::string const& filePath, int numberOfImages)
 {
 	std::cout << "Open file : " << filePath << std::endl;
 
-	std::vector<std::vector<float>> images;
+	std::vector<std::vector<double>> images;
 
 	std::ifstream file(filePath, std::ios::binary);
 
@@ -81,7 +81,7 @@ std::vector<std::vector<float>> DataLoader::LoadImages(std::string const& filePa
 
 		int nbPixels = nbRows * nbColumns;
 
-		images.resize(numberOfImages, std::vector<float>(nbPixels));
+		images.resize(numberOfImages, std::vector<double>(nbPixels));
 
 		for (int imageIdx = 0; imageIdx < numberOfImages; ++imageIdx)
 		{
@@ -91,7 +91,7 @@ std::vector<std::vector<float>> DataLoader::LoadImages(std::string const& filePa
 				{
 					unsigned char pixelColor = 0;
 					file.read((char*)&pixelColor, 1);
-					images[imageIdx][(rowIdx * nbRows) + columnIdx] = (float)pixelColor;
+					images[imageIdx][(rowIdx * nbRows) + columnIdx] = (double)pixelColor;
 				}
 			}
 		}
@@ -106,11 +106,11 @@ std::vector<std::vector<float>> DataLoader::LoadImages(std::string const& filePa
 
 	return images;
 }
-std::vector<std::vector<float>> DataLoader::LoadLabels(std::string const& filePath, int numberOfLabels)
+std::vector<std::vector<double>> DataLoader::LoadLabels(std::string const& filePath, int numberOfLabels)
 {
 	std::cout << "Open file : " << filePath << std::endl;
 
-	std::vector<std::vector<float>> labels;
+	std::vector<std::vector<double>> labels;
 
 	std::ifstream file(filePath, std::ios::binary);
 
@@ -130,7 +130,7 @@ std::vector<std::vector<float>> DataLoader::LoadLabels(std::string const& filePa
 			abort();
 		}
 
-		labels.resize(numberOfLabels, std::vector<float>(10));
+		labels.resize(numberOfLabels, std::vector<double>(10));
 
 		for (int labelIdx = 0; labelIdx < numberOfLabels; ++labelIdx)
 		{
@@ -161,9 +161,9 @@ int DataLoader::ConvertToInt(int value)
 
 	return ((int)c1 << 24) + ((int)c2 << 16) + ((int)c3 << 8) + c4;
 }
-std::vector<float> DataLoader::VectorizeLabel(unsigned int value)
+std::vector<double> DataLoader::VectorizeLabel(unsigned int value)
 {
-	std::vector<float> vectorizedLabel = std::vector<float>(10, 0);
+	std::vector<double> vectorizedLabel = std::vector<double>(10, 0);
 
 	vectorizedLabel[value] = 1.f;
 
