@@ -12,8 +12,9 @@ Network::Network(std::vector<unsigned int> networkForm)
 
 	m_uiNumberLayers = (unsigned int)networkForm.size();
 
-	std::default_random_engine generator;
-	std::normal_distribution<double> distribution(0.01, 1.0);
+	std::random_device rd;
+	std::default_random_engine generator(rd());
+	std::normal_distribution<double> distribution(0.0, 1.0);
 
 	// setup biases
 	for (unsigned int i = 1; i < m_uiNumberLayers; ++i)
@@ -95,14 +96,8 @@ void Network::Evaluate(std::vector<std::array<std::vector<double>, 2>> const& da
 
 		std::vector<double> outputs = OutputFromInput(inputs);
 
-		/*for (unsigned int i = 0; i < outputs.size(); ++i)
-			std::cout << outputs[i] << " ";*/
-
 		unsigned int networkNumber = (unsigned int)std::distance(outputs.begin(), std::max_element(outputs.begin(), outputs.end()));
 		unsigned int labelNumber = (unsigned int)(std::find(label.begin(), label.end(), 1.f) - label.begin());
-
-		/*std::cout << "\nNetwork number " << networkNumber << std::endl;
-		std::cout << "Right number " << labelNumber << std::endl;*/
 
 		if (networkNumber == labelNumber)
 			++correctResults;
@@ -322,9 +317,5 @@ std::vector<double> Network::CostFunction(std::vector<double> const& networkOutp
 }
 double Network::Sigmoid(double value)
 {
-	return 1.f / (1.f + exp(-value));
-}
-double Network::SigmoidDerivative(double value)
-{
-	return Sigmoid(value) * (1.f - Sigmoid(value));
+	return 1.0 / (1.0 + exp(-value));
 }

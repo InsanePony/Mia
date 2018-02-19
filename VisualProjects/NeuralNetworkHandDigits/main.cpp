@@ -12,8 +12,8 @@ int main()
 	DataLoader* loader = new DataLoader();
 
 	std::vector<std::array<std::vector<double>, 2>> data = loader->LoadData("../../MNIST data/train-data-pixels-value", "../../MNIST data/train-data-numbers", 60000);
-	std::vector<std::array<std::vector<double>, 2>> trainData(data.begin(), data.begin() + 5000);
-	std::vector<std::array<std::vector<double>, 2>> testData(data.begin() + 58000, data.end());
+	std::vector<std::array<std::vector<double>, 2>> trainData(data.begin(), data.begin() + 50000);
+	std::vector<std::array<std::vector<double>, 2>> testData(data.begin() + 50000, data.end());
 
 	std::vector<std::array<std::vector<double>, 2>> evaluationData = loader->LoadData("../../MNIST data/test-data-pixels-value", "../../MNIST data/test-data-numbers", 10000);
 
@@ -34,7 +34,7 @@ int main()
 	}*/
 
 	Network* net = new Network({ 784, 30, 10 });
-	net->StartLearning(trainData, 30, 1.0, 50, testData);
+	net->StartLearning(trainData, 30, 1.0, 10, testData);
 
 	std::cin.ignore();
 	return 0;

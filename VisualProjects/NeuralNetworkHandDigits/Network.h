@@ -22,7 +22,6 @@ private:
 
 	std::vector<double> CostFunction(std::vector<double> const& networkOutput, std::vector<double> const& expectedOutput);
 	double Sigmoid(double value);
-	double SigmoidDerivative(double value);
 
 	std::vector<unsigned int> m_vuiNetwork;
 	unsigned int m_uiNumberLayers;
