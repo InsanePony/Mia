@@ -7,6 +7,7 @@ class Network
 {
 public:
 	Network() = delete;
+	Network(Network const&) = delete;
 	Network(std::vector<unsigned int> networkForm);
 	~Network() = default;
 
