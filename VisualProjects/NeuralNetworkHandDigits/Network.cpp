@@ -220,10 +220,10 @@ void Network::Backpropagation(std::vector<std::vector<double>> &weights, std::ve
 		currDelta.resize(m_vuiNetwork[layerIdx + 1]);
 
 		// calculate delta
-		std::vector<double> const& currActivation = activations[layerIdx];
+		std::vector<double> currActivation = activations[layerIdx + 1];
 		for (unsigned int neuronIdx = 0; neuronIdx < m_vuiNetwork[layerIdx + 1]; ++neuronIdx)
 		{
-			double sigmoidDerivativeZVector = currActivation[neuronIdx] * (1.0 * currActivation[neuronIdx]);
+			double sigmoidDerivativeZVector = currActivation[neuronIdx] * (1.0 - currActivation[neuronIdx]);
 
 			int nbColumn = m_vuiNetwork[layerIdx + 2];
 			for (int columnIdx = 0; columnIdx < nbColumn; ++columnIdx)
@@ -237,6 +237,7 @@ void Network::Backpropagation(std::vector<std::vector<double>> &weights, std::ve
 		deltaWeight.clear();
 		deltaWeight.resize(m_vvfWeights[layerIdx].size());
 
+		currActivation = activations[layerIdx];
 		int currActivationSize = (int)currActivation.size();
 		size = (int)currDelta.size() * currActivationSize;
 		for (int idx = 0; idx < size; ++idx)
