@@ -3,12 +3,15 @@
 #include <vector>
 #include <array>
 
+#include "NetworkLoader.h"
+
 class Network
 {
 public:
 	Network() = delete;
 	Network(Network const&) = delete;
 	Network(std::vector<unsigned int> networkForm);
+	Network(NetworkLoader* netLoader);
 	~Network() = default;
 
 	// testData = used data to evaluate neural network after each generation
@@ -27,6 +30,6 @@ private:
 	std::vector<unsigned int> m_vuiNetwork;
 	unsigned int m_uiNumberLayers;
 
-	std::vector<std::vector<double>> m_vvfBiases;
-	std::vector<std::vector<double>> m_vvfWeights;
+	std::vector<std::vector<double>> m_vvdBiases;
+	std::vector<std::vector<double>> m_vvdWeights;
 };

@@ -20,7 +20,7 @@ NetworkSaver::NetworkSaver(std::string filename, std::vector<unsigned int> netwo
 		std::cout << "File writing error : number of layers" << std::endl;
 
 	// network form
-	for (int layerIdx = 0; layerIdx < numberOfLayers; ++layerIdx)
+	for (unsigned int layerIdx = 0; layerIdx < numberOfLayers; ++layerIdx)
 		file.write(reinterpret_cast<const char*>(&networkForm[layerIdx]), sizeof(unsigned int));
 
 	if (file.bad())

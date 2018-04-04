@@ -3,6 +3,8 @@
 #include <iostream>
 
 #include "Network.h"
+#include "NetworkSaver.h"
+#include "NetworkLoader.h"
 #include "DataLoader.h"
 #include "VectorOperators.h"
 
@@ -27,7 +29,7 @@ Network::Network(std::vector<unsigned int> networkForm)
 		for (unsigned int j = 0; j < size; ++j)
 			currLayerBiases[j] = distribution(generator);
 
-		m_vvfBiases.push_back(currLayerBiases);
+		m_vvdBiases.push_back(currLayerBiases);
 	}
 
 	// setup weights
@@ -41,8 +43,16 @@ Network::Network(std::vector<unsigned int> networkForm)
 		for (unsigned int j = 0; j < size; ++j)
 			currLayerWeights[j] = distribution(generator);
 
-		m_vvfWeights.push_back(currLayerWeights);
+		m_vvdWeights.push_back(currLayerWeights);
 	}
+}
+Network::Network(NetworkLoader* netLoader)
+{
+	m_vuiNetwork = netLoader->GetNetworkForm();
+	m_uiNumberLayers = netLoader->GetNumberOfLayers();
+
+	m_vvdBiases = netLoader->GetBiases();
+	m_vvdWeights = netLoader->GetWeights();
 }
 
 void Network::StartLearning(std::vector<std::array<std::vector<double>, 2>> trainingData, unsigned int numberOfGenerations, double learningRate, unsigned int batchSize, std::vector<std::array<std::vector<double>, 2>> const& testData)
@@ -79,6 +89,9 @@ void Network::StartLearning(std::vector<std::array<std::vector<double>, 2>> trai
 		else
 			std::cout << "\nGeneration " << genIdx + 1 << " complete." << std::endl;
 	}
+
+	NetworkSaver* netSave = new NetworkSaver("testSave", m_vuiNetwork, m_vvdBiases, m_vvdWeights);
+	delete netSave;
 }
 
 void Network::Evaluate(std::vector<std::array<std::vector<double>, 2>> const& data)
@@ -128,10 +141,10 @@ std::vector<double> Network::OutputFromInput(std::vector<double> inputs)
 			for (unsigned int inputIdx = 0; inputIdx < numberInput; ++inputIdx)
 			{
 				unsigned int weightIdx = inputIdx + (neuronIdx * numberInput);
-				sigmaWeightsInputs += m_vvfWeights[layerIdx - 1][weightIdx] * inputs[inputIdx];
+				sigmaWeightsInputs += m_vvdWeights[layerIdx - 1][weightIdx] * inputs[inputIdx];
 			}
 
-			sigmaWeightsInputs += m_vvfBiases[layerIdx - 1][neuronIdx];
+			sigmaWeightsInputs += m_vvdBiases[layerIdx - 1][neuronIdx];
 
 			outputs.push_back(Sigmoid(sigmaWeightsInputs));
 		}
@@ -168,10 +181,10 @@ void Network::Backpropagation(std::vector<std::vector<double>> &weights, std::ve
 			{
 				unsigned int weightIdx = activationIdx + (neuronIdx * numberActivation);
 
-				sigmaWeightsActivations += m_vvfWeights[layerIdx - 1][weightIdx] * activation[activationIdx];
+				sigmaWeightsActivations += m_vvdWeights[layerIdx - 1][weightIdx] * activation[activationIdx];
 			}
 
-			sigmaWeightsActivations += m_vvfBiases[layerIdx - 1][neuronIdx];
+			sigmaWeightsActivations += m_vvdBiases[layerIdx - 1][neuronIdx];
 
 			outputs.push_back(Sigmoid(sigmaWeightsActivations));
 		}
@@ -196,7 +209,7 @@ void Network::Backpropagation(std::vector<std::vector<double>> &weights, std::ve
 
 
 	std::vector<double> deltaWeight;
-	deltaWeight.resize(m_vvfWeights.back().size());
+	deltaWeight.resize(m_vvdWeights.back().size());
 
 	std::vector<double> const& beforeLastActivation = activations[m_uiNumberLayers - 2];
 	int beforeLastActivationSize = m_vuiNetwork[m_uiNumberLayers - 2];
@@ -214,7 +227,7 @@ void Network::Backpropagation(std::vector<std::vector<double>> &weights, std::ve
 
 	for (int layerIdx = m_uiNumberLayers - 3; layerIdx >= 0; --layerIdx)
 	{
-		std::vector<double> transposedWeights = Utility::Transpose(m_vvfWeights[layerIdx + 1], m_vuiNetwork[layerIdx + 2], m_vuiNetwork[layerIdx + 1]);
+		std::vector<double> transposedWeights = Utility::Transpose(m_vvdWeights[layerIdx + 1], m_vuiNetwork[layerIdx + 2], m_vuiNetwork[layerIdx + 1]);
 
 		std::vector<double> currDelta;
 		currDelta.resize(m_vuiNetwork[layerIdx + 1]);
@@ -235,7 +248,7 @@ void Network::Backpropagation(std::vector<std::vector<double>> &weights, std::ve
 		biases[layerIdx] = currDelta;
 
 		deltaWeight.clear();
-		deltaWeight.resize(m_vvfWeights[layerIdx].size());
+		deltaWeight.resize(m_vvdWeights[layerIdx].size());
 
 		currActivation = activations[layerIdx];
 		int currActivationSize = (int)currActivation.size();
@@ -254,14 +267,14 @@ void Network::Backpropagation(std::vector<std::vector<double>> &weights, std::ve
 void Network::UpdateNetworkFromBatch(std::vector<std::array<std::vector<double>, 2>> const& batch, double learningRate)
 {
 	// create a copy of weights but filled with 0
-	std::vector<std::vector<double>> updatedWeights = m_vvfWeights;
+	std::vector<std::vector<double>> updatedWeights = m_vvdWeights;
 
 	int weightsSize = (int)updatedWeights.size();
 	for (int idx = 0; idx < weightsSize; ++idx)
 		std::fill(updatedWeights[idx].begin(), updatedWeights[idx].end(), 0.f);
 
 	// create a copy of biases but filled with 0
-	std::vector<std::vector<double>> updatedBiases = m_vvfBiases;
+	std::vector<std::vector<double>> updatedBiases = m_vvdBiases;
 
 	int biasesSize = (int)updatedBiases.size();
 	for (int idx = 0; idx < biasesSize; ++idx)
@@ -274,12 +287,12 @@ void Network::UpdateNetworkFromBatch(std::vector<std::array<std::vector<double>,
 		std::vector<double> image = batch[pairIdx][0];
 		std::vector<double> label = batch[pairIdx][1];
 
-		std::vector<std::vector<double>> deltaWeights = m_vvfWeights;
+		std::vector<std::vector<double>> deltaWeights = m_vvdWeights;
 
 		for (int idx = 0; idx < weightsSize; ++idx)
 			std::fill(deltaWeights[idx].begin(), deltaWeights[idx].end(), 0.f);
 
-		std::vector<std::vector<double>> deltaBiases = m_vvfBiases;
+		std::vector<std::vector<double>> deltaBiases = m_vvdBiases;
 
 		for (int idx = 0; idx < biasesSize; ++idx)
 			std::fill(deltaBiases[idx].begin(), deltaBiases[idx].end(), 0.f);
@@ -304,11 +317,11 @@ void Network::UpdateNetworkFromBatch(std::vector<std::array<std::vector<double>,
 	{
 		int neuronWeightsSize = (int)updatedWeights[weightIdx].size();
 		for (int inputIdx = 0; inputIdx < neuronWeightsSize; ++inputIdx)
-			m_vvfWeights[weightIdx][inputIdx] -= (learningRate / batchSize) * updatedWeights[weightIdx][inputIdx];
+			m_vvdWeights[weightIdx][inputIdx] -= (learningRate / batchSize) * updatedWeights[weightIdx][inputIdx];
 
 		int neuronBiasesSize = (int)updatedBiases[weightIdx].size();
 		for (int neuronIdx = 0; neuronIdx < neuronBiasesSize; ++neuronIdx)
-			m_vvfBiases[weightIdx][neuronIdx] -= (learningRate / batchSize) * updatedBiases[weightIdx][neuronIdx];
+			m_vvdBiases[weightIdx][neuronIdx] -= (learningRate / batchSize) * updatedBiases[weightIdx][neuronIdx];
 	}
 }
 
