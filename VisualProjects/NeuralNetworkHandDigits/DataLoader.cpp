@@ -83,8 +83,6 @@ std::vector<std::vector<double>> DataLoader::LoadImages(std::string const& fileP
 
 		images.resize(numberOfImages, std::vector<double>(nbPixels));
 
-		double norm = 0;
-
 		for (int imageIdx = 0; imageIdx < numberOfImages; ++imageIdx)
 		{
 			for (int rowIdx = 0; rowIdx < nbRows; ++rowIdx)
@@ -93,15 +91,9 @@ std::vector<std::vector<double>> DataLoader::LoadImages(std::string const& fileP
 				{
 					unsigned char pixelColor = 0;
 					file.read((char*)&pixelColor, 1);
-					images[imageIdx][(rowIdx * nbRows) + columnIdx] = (double)pixelColor;
-
-					norm += pixelColor * pixelColor;
+					images[imageIdx][(rowIdx * nbRows) + columnIdx] = (double)pixelColor / 255.0;
 				}
 			}
-
-			norm = sqrt(norm);
-			for (int j = 0; j < nbPixels; ++j)
-				images[imageIdx][j] /= norm;
 		}
 
 		file.close();
