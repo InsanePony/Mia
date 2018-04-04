@@ -114,11 +114,13 @@
     <ClCompile Include="DataLoader.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Network.cpp" />
+    <ClCompile Include="NetworkLoader.cpp" />
     <ClCompile Include="NetworkSaver.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="DataLoader.h" />
     <ClInclude Include="Network.h" />
+    <ClInclude Include="NetworkLoader.h" />
     <ClInclude Include="NetworkSaver.h" />
     <ClInclude Include="VectorOperators.h" />
   </ItemGroup>
