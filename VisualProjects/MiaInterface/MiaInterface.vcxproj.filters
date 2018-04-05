@@ -36,6 +36,9 @@
     <ClCompile Include="MiaInterface.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="DigitViewer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <QtUic Include="MiaInterface.ui">
@@ -49,6 +52,9 @@
   </ItemGroup>
   <ItemGroup>
     <QtMoc Include="MiaInterface.h">
+      <Filter>Header Files</Filter>
+    </QtMoc>
+    <QtMoc Include="DigitViewer.h">
       <Filter>Header Files</Filter>
     </QtMoc>
   </ItemGroup>

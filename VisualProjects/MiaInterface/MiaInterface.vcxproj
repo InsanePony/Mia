@@ -115,6 +115,7 @@
     </QtRcc>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="DigitViewer.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="MiaInterface.cpp" />
   </ItemGroup>
@@ -126,6 +127,9 @@
   </ItemGroup>
   <ItemGroup>
     <QtRcc Include="MiaInterface.qrc" />
+  </ItemGroup>
+  <ItemGroup>
+    <QtMoc Include="DigitViewer.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Condition="Exists('$(QtMsBuild)\qt.targets')">
