@@ -17,6 +17,7 @@
 #include <QtWidgets/QHeaderView>
 #include <QtWidgets/QMainWindow>
 #include <QtWidgets/QMenuBar>
+#include <QtWidgets/QSpinBox>
 #include <QtWidgets/QStatusBar>
 #include <QtWidgets/QWidget>
 
@@ -27,6 +28,7 @@ class Ui_MiaInterfaceClass
 public:
     QWidget *centralWidget;
     QGraphicsView *digit;
+    QSpinBox *digitSpinBox;
     QMenuBar *menuBar;
     QStatusBar *statusBar;
 
@@ -40,6 +42,10 @@ public:
         digit = new QGraphicsView(centralWidget);
         digit->setObjectName(QStringLiteral("digit"));
         digit->setGeometry(QRect(120, 80, 360, 360));
+        digitSpinBox = new QSpinBox(centralWidget);
+        digitSpinBox->setObjectName(QStringLiteral("digitSpinBox"));
+        digitSpinBox->setGeometry(QRect(210, 460, 190, 40));
+        digitSpinBox->setMaximum(70000);
         MiaInterfaceClass->setCentralWidget(centralWidget);
         menuBar = new QMenuBar(MiaInterfaceClass);
         menuBar->setObjectName(QStringLiteral("menuBar"));
