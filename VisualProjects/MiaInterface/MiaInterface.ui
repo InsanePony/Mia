@@ -37,6 +37,32 @@
      <number>70000</number>
     </property>
    </widget>
+   <widget class="QGraphicsView" name="miaResponse">
+    <property name="geometry">
+     <rect>
+      <x>730</x>
+      <y>80</y>
+      <width>360</width>
+      <height>360</height>
+     </rect>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="askMiaButton">
+    <property name="enabled">
+     <bool>false</bool>
+    </property>
+    <property name="geometry">
+     <rect>
+      <x>530</x>
+      <y>460</y>
+      <width>160</width>
+      <height>50</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>What's this ?</string>
+    </property>
+   </widget>
   </widget>
   <widget class="QMenuBar" name="menuBar">
    <property name="geometry">
@@ -47,8 +73,26 @@
      <height>26</height>
     </rect>
    </property>
+   <widget class="QMenu" name="menuFile">
+    <property name="title">
+     <string>File</string>
+    </property>
+    <addaction name="actionNewNetwork"/>
+    <addaction name="actionLoadNetwork"/>
+   </widget>
+   <addaction name="menuFile"/>
   </widget>
   <widget class="QStatusBar" name="statusBar"/>
+  <action name="actionNewNetwork">
+   <property name="text">
+    <string>New Network</string>
+   </property>
+  </action>
+  <action name="actionLoadNetwork">
+   <property name="text">
+    <string>Load Network</string>
+   </property>
+  </action>
  </widget>
  <layoutdefault spacing="6" margin="11"/>
  <resources>
