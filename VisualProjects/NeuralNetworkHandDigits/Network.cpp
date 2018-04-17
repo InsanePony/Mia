@@ -119,6 +119,14 @@ void Network::Evaluate(std::vector<std::array<std::vector<double>, 2>> const& da
 	std::cout << correctResults << " / " << size << std::endl;
 }
 
+int Network::GetResponse(std::vector<double> number)
+{
+	std::vector<double> outputs = OutputFromInput(number);
+	unsigned int networkNumber = (unsigned int)std::distance(outputs.begin(), std::max_element(outputs.begin(), outputs.end()));
+
+	return networkNumber;
+}
+
 std::vector<double> Network::OutputFromInput(std::vector<double> inputs)
 {
 	std::vector<double> outputs;

@@ -21,6 +21,8 @@ public:
 
 	NETWORK_FUNCS_DLL void Evaluate(std::vector<std::array<std::vector<double>, 2>> const& data);
 
+	NETWORK_FUNCS_DLL int GetResponse(std::vector<double> number);
+
 private:
 	std::vector<double> OutputFromInput(std::vector<double> inputs);
 	void Backpropagation(std::vector<std::vector<double>> &weights, std::vector<std::vector<double>> &biases, std::vector<double> const& image, std::vector<double> const& label);
