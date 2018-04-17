@@ -7,6 +7,7 @@
 #include "ui_MiaInterface.h"
 
 #include "DigitViewer.h"
+#include "Network.h"
 
 class MiaInterface : public QMainWindow
 {
@@ -17,11 +18,22 @@ public:
 	virtual ~MiaInterface();
 
 private:
+	void CreateNetwork();
+	void LoadNetwork();
+
 	void ChangeDigit(int value);
+	void AskMia();
 
 	Ui::MiaInterfaceClass ui;
 
+	Network* m_pNetwork;
+
 	DigitViewer* m_pDigitViewer;
+	DigitViewer* m_pMiaResponse;
+
+	QPushButton* m_pAskMiaButton;
+
+	int currDigitIndex;
 
 	std::vector<std::array<std::vector<double>, 2>> m_vavdTrainData;
 	std::vector<std::array<std::vector<double>, 2>> m_vavdEvaluationData;
