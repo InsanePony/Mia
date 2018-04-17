@@ -1,12 +1,10 @@
 #include "DigitViewer.h"
 
-DigitViewer::DigitViewer(QGraphicsView* digitGraphicsView, QSpinBox* choiceSpinBox)
+DigitViewer::DigitViewer(QGraphicsView* digitGraphicsView)
 	: QObject()
 {
 	m_pDigitGraphicsView = digitGraphicsView;
 	m_pDigitScene = nullptr;
-
-	m_pDigitSpinBox = choiceSpinBox;
 }
 DigitViewer::~DigitViewer()
 {
@@ -37,6 +35,29 @@ void DigitViewer::ShowDigit(std::vector<double> digitAsData)
 	m_pDigitScene = new QGraphicsScene(this);
 	m_pDigitScene->addPixmap(QPixmap::fromImage(digitAsImage));
 	m_pDigitScene->setSceneRect(digitAsImage.rect());
+
+	m_pDigitGraphicsView->setScene(m_pDigitScene);
+}
+void DigitViewer::ShowDigit(int number)
+{
+	if (m_pDigitScene)
+		delete m_pDigitScene;
+
+	m_pDigitScene = new QGraphicsScene(this);
+
+	std::string path = "../../Digits/";
+	path.push_back('0' + number);
+	path.append(".png");
+	QImage digit = QImage(path.c_str());
+
+	if (number == 4)
+	{
+		int imageSize = m_pDigitGraphicsView->size().width() - 10;
+		digit = digit.scaled(imageSize, imageSize, Qt::AspectRatioMode::IgnoreAspectRatio, Qt::TransformationMode::SmoothTransformation);
+	}
+
+	m_pDigitScene->addPixmap(QPixmap::fromImage(digit));
+	m_pDigitScene->setSceneRect(digit.rect());
 
 	m_pDigitGraphicsView->setScene(m_pDigitScene);
 }
