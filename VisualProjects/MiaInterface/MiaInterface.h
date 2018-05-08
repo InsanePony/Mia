@@ -6,6 +6,7 @@
 #include <QtWidgets/QMainWindow>
 #include "ui_MiaInterface.h"
 
+#include "DigitDrawer.h"
 #include "DigitViewer.h"
 #include "Network.h"
 
@@ -21,12 +22,17 @@ private:
 	void CreateNetwork();
 	void LoadNetwork();
 
+	void NewEntry();
+	void TestNewEntry(QImage* image);
+
 	void ChangeDigit(int value);
 	void AskMia();
 
 	Ui::MiaInterfaceClass ui;
 
 	Network* m_pNetwork;
+
+	DigitDrawer* m_pDigitDrawer;
 
 	DigitViewer* m_pDigitViewer;
 	DigitViewer* m_pMiaResponse;

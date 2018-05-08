@@ -9,6 +9,8 @@ MiaInterface::MiaInterface(QWidget *parent)
 
 	m_pNetwork = nullptr;
 
+	m_pDigitDrawer = new DigitDrawer(this);
+
 	DataLoader* loader = new DataLoader();
 
 	std::vector<std::array<std::vector<double>, 2>> data = loader->LoadData("../../MNIST data/train-data-pixels-value", "../../MNIST data/train-data-numbers", 60000);
@@ -32,13 +34,16 @@ MiaInterface::MiaInterface(QWidget *parent)
 	QObject::connect(ui.digitSpinBox, static_cast<void(QSpinBox::*)(int)>(&QSpinBox::valueChanged), this, &MiaInterface::ChangeDigit);
 	QObject::connect(ui.actionNewNetwork, &QAction::triggered, this, &MiaInterface::CreateNetwork);
 	QObject::connect(ui.actionLoadNetwork, &QAction::triggered, this, &MiaInterface::LoadNetwork);
+	QObject::connect(ui.actionNewEntry, &QAction::triggered, this, &MiaInterface::NewEntry);
 	QObject::connect(ui.askMiaButton, &QPushButton::pressed, this, &MiaInterface::AskMia);
+	QObject::connect(m_pDigitDrawer, &DigitDrawer::EntryFinished, this, &MiaInterface::TestNewEntry);
 }
 MiaInterface::~MiaInterface()
 {
 	if (m_pNetwork)
 		delete m_pNetwork;
 
+	delete m_pDigitDrawer;
 	delete m_pDigitViewer;
 	delete m_pMiaResponse;
 }
@@ -56,6 +61,27 @@ void MiaInterface::LoadNetwork()
 		m_pNetwork = new Network(new NetworkLoader(filePath.toLatin1().constData()));
 		m_pAskMiaButton->setEnabled(true);
 	}
+}
+
+void MiaInterface::NewEntry()
+{
+	m_pDigitDrawer->Show();
+}
+void MiaInterface::TestNewEntry(QImage* image)
+{
+	QImage forMiaImage = image->scaled(28, 28, Qt::AspectRatioMode::IgnoreAspectRatio, Qt::TransformationMode::FastTransformation);
+
+	std::vector<double> imageAsData;
+	imageAsData.resize(784);
+	for (int idx = 0; idx < 784; ++idx)
+	{
+		int rowIdx = idx / 28;
+		int columnIdx = idx % 28;
+
+		imageAsData[idx] = (255 - forMiaImage.pixelColor(columnIdx, rowIdx).red()) / 255.0;
+	}
+
+	m_pMiaResponse->ShowDigit(m_pNetwork->GetResponse(imageAsData));
 }
 
 void MiaInterface::ChangeDigit(int value)

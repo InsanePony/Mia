@@ -79,6 +79,7 @@
     </property>
     <addaction name="actionNewNetwork"/>
     <addaction name="actionLoadNetwork"/>
+    <addaction name="actionNewEntry"/>
    </widget>
    <addaction name="menuFile"/>
   </widget>
@@ -91,6 +92,11 @@
   <action name="actionLoadNetwork">
    <property name="text">
     <string>Load Network</string>
+   </property>
+  </action>
+  <action name="actionNewEntry">
+   <property name="text">
+    <string>New Entry</string>
    </property>
   </action>
  </widget>
