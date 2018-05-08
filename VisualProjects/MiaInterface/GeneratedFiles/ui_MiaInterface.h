@@ -30,6 +30,7 @@ class Ui_MiaInterfaceClass
 public:
     QAction *actionNewNetwork;
     QAction *actionLoadNetwork;
+    QAction *actionNewEntry;
     QWidget *centralWidget;
     QGraphicsView *digit;
     QSpinBox *digitSpinBox;
@@ -48,6 +49,8 @@ public:
         actionNewNetwork->setObjectName(QStringLiteral("actionNewNetwork"));
         actionLoadNetwork = new QAction(MiaInterfaceClass);
         actionLoadNetwork->setObjectName(QStringLiteral("actionLoadNetwork"));
+        actionNewEntry = new QAction(MiaInterfaceClass);
+        actionNewEntry->setObjectName(QStringLiteral("actionNewEntry"));
         centralWidget = new QWidget(MiaInterfaceClass);
         centralWidget->setObjectName(QStringLiteral("centralWidget"));
         digit = new QGraphicsView(centralWidget);
@@ -78,6 +81,7 @@ public:
         menuBar->addAction(menuFile->menuAction());
         menuFile->addAction(actionNewNetwork);
         menuFile->addAction(actionLoadNetwork);
+        menuFile->addAction(actionNewEntry);
 
         retranslateUi(MiaInterfaceClass);
 
@@ -89,6 +93,7 @@ public:
         MiaInterfaceClass->setWindowTitle(QApplication::translate("MiaInterfaceClass", "MiaInterface", Q_NULLPTR));
         actionNewNetwork->setText(QApplication::translate("MiaInterfaceClass", "New Network", Q_NULLPTR));
         actionLoadNetwork->setText(QApplication::translate("MiaInterfaceClass", "Load Network", Q_NULLPTR));
+        actionNewEntry->setText(QApplication::translate("MiaInterfaceClass", "New Entry", Q_NULLPTR));
         askMiaButton->setText(QApplication::translate("MiaInterfaceClass", "What's this ?", Q_NULLPTR));
         menuFile->setTitle(QApplication::translate("MiaInterfaceClass", "File", Q_NULLPTR));
     } // retranslateUi
