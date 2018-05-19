@@ -8,11 +8,11 @@
 #include "DataLoader.h"
 #include "VectorOperators.h"
 
-Network::Network(std::vector<unsigned int> networkForm)
+Network::Network(std::vector<unsigned int> networkForm, std::string saveFileName)
 {
 	m_vuiNetwork = networkForm;
-
 	m_uiNumberLayers = (unsigned int)networkForm.size();
+	m_sNetworkSaveName = saveFileName;
 
 	std::random_device rd;
 	std::default_random_engine generator(rd());
@@ -45,6 +45,8 @@ Network::Network(std::vector<unsigned int> networkForm)
 
 		m_vvdWeights.push_back(currLayerWeights);
 	}
+
+	m_fpOnLearningEnd = nullptr;
 }
 Network::Network(NetworkLoader* netLoader)
 {
@@ -90,8 +92,14 @@ void Network::StartLearning(std::vector<std::array<std::vector<double>, 2>> trai
 			std::cout << "\nGeneration " << genIdx + 1 << " complete." << std::endl;
 	}
 
-	NetworkSaver* netSave = new NetworkSaver("testSave", m_vuiNetwork, m_vvdBiases, m_vvdWeights);
-	delete netSave;
+	if (m_sNetworkSaveName != "")
+	{
+		NetworkSaver* netSave = new NetworkSaver(m_sNetworkSaveName, m_vuiNetwork, m_vvdBiases, m_vvdWeights);
+		delete netSave;
+	}
+
+	if (m_fpOnLearningEnd != nullptr)
+		m_fpOnLearningEnd();
 }
 
 void Network::Evaluate(std::vector<std::array<std::vector<double>, 2>> const& data)
@@ -117,6 +125,11 @@ void Network::Evaluate(std::vector<std::array<std::vector<double>, 2>> const& da
 	}
 
 	std::cout << correctResults << " / " << size << std::endl;
+}
+
+void Network::OnLearningEnd(std::function<void()> callback)
+{
+	m_fpOnLearningEnd = callback;
 }
 
 int Network::GetResponse(std::vector<double> number)

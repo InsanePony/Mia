@@ -4,15 +4,17 @@
 
 #include <vector>
 #include <array>
+#include <functional>
 
 #include "NetworkLoader.h"
+
 
 class Network
 {
 public:
 	NETWORK_FUNCS_DLL Network() = delete;
 	NETWORK_FUNCS_DLL Network(Network const&) = delete;
-	NETWORK_FUNCS_DLL Network(std::vector<unsigned int> networkForm);
+	NETWORK_FUNCS_DLL Network(std::vector<unsigned int> networkForm, std::string saveFileName = "");
 	NETWORK_FUNCS_DLL Network(NetworkLoader* netLoader);
 	NETWORK_FUNCS_DLL ~Network() = default;
 
@@ -20,6 +22,8 @@ public:
 	NETWORK_FUNCS_DLL void StartLearning(std::vector<std::array<std::vector<double>, 2>> trainingData, unsigned int numberOfGenerations, double learningRate, unsigned int batchSize, std::vector<std::array<std::vector<double>, 2>> const& testData = {}); // = stochastic gradient descent
 
 	NETWORK_FUNCS_DLL void Evaluate(std::vector<std::array<std::vector<double>, 2>> const& data);
+	
+	NETWORK_FUNCS_DLL void OnLearningEnd(std::function<void()> callback);
 
 	NETWORK_FUNCS_DLL int GetResponse(std::vector<double> number);
 
@@ -34,6 +38,11 @@ private:
 	std::vector<unsigned int> m_vuiNetwork;
 	unsigned int m_uiNumberLayers;
 
+	std::string m_sNetworkSaveName;
+
 	std::vector<std::vector<double>> m_vvdBiases;
 	std::vector<std::vector<double>> m_vvdWeights;
+
+	
+	std::function<void()> m_fpOnLearningEnd;
 };
