@@ -127,6 +127,7 @@
     <ClInclude Include="Network.h" />
     <ClInclude Include="NetworkLoader.h" />
     <ClInclude Include="NetworkSaver.h" />
+    <ClInclude Include="Utils.h" />
     <ClInclude Include="VectorOperators.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
