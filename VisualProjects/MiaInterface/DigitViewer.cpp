@@ -59,11 +59,6 @@ void DigitViewer::ShowDigit(int number)
 	path.append(".png");
 	QImage digit = QImage(path.c_str());
 
-	std::ofstream file;
-	file.open(path + "test.txt");
-	file.write(path.c_str(), 255);
-	file.close();
-
 	if (number == 4)
 	{
 		int imageSize = m_pDigitGraphicsView->size().width() - 10;
