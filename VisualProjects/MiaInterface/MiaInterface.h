@@ -28,6 +28,8 @@ private:
 	void ChangeDigit(int value);
 	void AskMia();
 
+	void NetworkFinishLearningPhase();
+
 	Ui::MiaInterfaceClass ui;
 
 	Network* m_pNetwork;

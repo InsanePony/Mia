@@ -1,6 +1,12 @@
+#include <functional>
+
 #include "MiaInterface.h"
 #include "DataLoader.h"
+#include "DialogNetworkCreation.h"
+
 #include "qfiledialog.h"
+#include "qmessagebox.h"
+
 
 MiaInterface::MiaInterface(QWidget *parent)
 	: QMainWindow(parent)
@@ -50,7 +56,19 @@ MiaInterface::~MiaInterface()
 
 void MiaInterface::CreateNetwork()
 {
+	QMessageBox::StandardButton saveFileQuestion = QMessageBox::question(this, "Mia Interface", "Save Network after ?", QMessageBox::Yes | QMessageBox::No);
 
+	DialogNetworkCreation dialog(this, saveFileQuestion == QMessageBox::Yes);
+
+	if (dialog.exec() == QDialog::Accepted)
+	{
+		dialog.hide();
+		m_pAskMiaButton->setEnabled(false);
+
+		m_pNetwork = new Network(dialog.GetForm(), dialog.GetFileName());
+		m_pNetwork->OnLearningEnd(std::bind(&MiaInterface::NetworkFinishLearningPhase, this));
+		m_pNetwork->StartLearning(m_vavdTrainData, dialog.GetNumberGenerations(), dialog.GetLearningRate(), dialog.GetBatchSize(), (dialog.GetTrackProgress()) ? m_vavdTestData : std::vector<std::array<std::vector<double>, 2>>());
+	}
 }
 void MiaInterface::LoadNetwork()
 {
@@ -69,19 +87,22 @@ void MiaInterface::NewEntry()
 }
 void MiaInterface::TestNewEntry(QImage* image)
 {
-	QImage forMiaImage = image->scaled(28, 28, Qt::AspectRatioMode::IgnoreAspectRatio, Qt::TransformationMode::FastTransformation);
-
-	std::vector<double> imageAsData;
-	imageAsData.resize(784);
-	for (int idx = 0; idx < 784; ++idx)
+	if (m_pAskMiaButton->isEnabled())
 	{
-		int rowIdx = idx / 28;
-		int columnIdx = idx % 28;
+		QImage forMiaImage = image->scaled(28, 28, Qt::AspectRatioMode::IgnoreAspectRatio, Qt::TransformationMode::FastTransformation);
 
-		imageAsData[idx] = (255 - forMiaImage.pixelColor(columnIdx, rowIdx).red()) / 255.0;
+		std::vector<double> imageAsData;
+		imageAsData.resize(784);
+		for (int idx = 0; idx < 784; ++idx)
+		{
+			int rowIdx = idx / 28;
+			int columnIdx = idx % 28;
+
+			imageAsData[idx] = (255 - forMiaImage.pixelColor(columnIdx, rowIdx).red()) / 255.0;
+		}
+
+		m_pMiaResponse->ShowDigit(m_pNetwork->GetResponse(imageAsData));
 	}
-
-	m_pMiaResponse->ShowDigit(m_pNetwork->GetResponse(imageAsData));
 }
 
 void MiaInterface::ChangeDigit(int value)
@@ -92,4 +113,10 @@ void MiaInterface::ChangeDigit(int value)
 void MiaInterface::AskMia()
 {
 	m_pMiaResponse->ShowDigit(m_pNetwork->GetResponse(m_vvdDigits[currDigitIndex]));
+}
+
+void MiaInterface::NetworkFinishLearningPhase()
+{
+	QMessageBox::StandardButton networkFinishInformation = QMessageBox::information(this, "Mia Interface", "Learning phase finished", QMessageBox::Ok);
+	m_pAskMiaButton->setEnabled(true);
 }
