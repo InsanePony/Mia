@@ -3,6 +3,7 @@
 #include "MiaInterface.h"
 #include "DataLoader.h"
 #include "DialogNetworkCreation.h"
+#include "Utils.h"
 
 #include "qfiledialog.h"
 #include "qmessagebox.h"
@@ -19,11 +20,18 @@ MiaInterface::MiaInterface(QWidget *parent)
 
 	DataLoader* loader = new DataLoader();
 
-	std::vector<std::array<std::vector<double>, 2>> data = loader->LoadData("../../MNIST data/train-data-pixels-value", "../../MNIST data/train-data-numbers", 60000);
+	std::string path;
+
+	if (Utils::IsInVisual())
+		path = "../..";
+	else
+		path = Utils::GetExePath();
+
+	std::vector<std::array<std::vector<double>, 2>> data = loader->LoadData(path + "/MNIST data/train-data-pixels-value", path + "/MNIST data/train-data-numbers", 60000);
 
 	m_vavdTrainData = std::vector<std::array<std::vector<double>, 2>>(data.begin(), data.begin() + 50000);
 	m_vavdEvaluationData =  std::vector<std::array<std::vector<double>, 2>>(data.begin() + 50000, data.end());
-	m_vavdTestData = loader->LoadData("../../MNIST data/test-data-pixels-value", "../../MNIST data/test-data-numbers", 10000);
+	m_vavdTestData = loader->LoadData(path + "/MNIST data/test-data-pixels-value", path + "/MNIST data/test-data-numbers", 10000);
 
 	for (int idx = 0; idx < 60000; ++idx)
 		m_vvdDigits.push_back(data[idx][0]);
@@ -65,6 +73,7 @@ void MiaInterface::CreateNetwork()
 		dialog.hide();
 		m_pAskMiaButton->setEnabled(false);
 
+#undef GetForm
 		m_pNetwork = new Network(dialog.GetForm(), dialog.GetFileName());
 		m_pNetwork->OnLearningEnd(std::bind(&MiaInterface::NetworkFinishLearningPhase, this));
 		m_pNetwork->StartLearning(m_vavdTrainData, dialog.GetNumberGenerations(), dialog.GetLearningRate(), dialog.GetBatchSize(), (dialog.GetTrackProgress()) ? m_vavdTestData : std::vector<std::array<std::vector<double>, 2>>());

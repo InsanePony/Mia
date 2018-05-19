@@ -1,4 +1,7 @@
 #include "DigitViewer.h"
+#include "Utils.h"
+
+#include <fstream>
 
 DigitViewer::DigitViewer(QGraphicsView* digitGraphicsView)
 	: QObject()
@@ -45,10 +48,21 @@ void DigitViewer::ShowDigit(int number)
 
 	m_pDigitScene = new QGraphicsScene(this);
 
-	std::string path = "../../Digits/";
+	std::string path;
+
+	if (Utils::IsInVisual())
+		path = "../../Digits/";
+	else
+		path = Utils::GetExePath() + "\\Digits\\";
+
 	path.push_back('0' + number);
 	path.append(".png");
 	QImage digit = QImage(path.c_str());
+
+	std::ofstream file;
+	file.open(path + "test.txt");
+	file.write(path.c_str(), 255);
+	file.close();
 
 	if (number == 4)
 	{
