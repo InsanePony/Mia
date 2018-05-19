@@ -115,6 +115,7 @@
     </QtRcc>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="DialogNetworkCreation.cpp" />
     <ClCompile Include="DigitDrawer.cpp" />
     <ClCompile Include="DigitViewer.cpp" />
     <ClCompile Include="main.cpp" />
@@ -134,6 +135,9 @@
   </ItemGroup>
   <ItemGroup>
     <QtMoc Include="DigitDrawer.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <QtMoc Include="DialogNetworkCreation.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Condition="Exists('$(QtMsBuild)\qt.targets')">
