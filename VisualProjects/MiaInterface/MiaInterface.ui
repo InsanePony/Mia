@@ -86,12 +86,12 @@
   <widget class="QStatusBar" name="statusBar"/>
   <action name="actionNewNetwork">
    <property name="text">
-    <string>New Network</string>
+    <string>New Network...</string>
    </property>
   </action>
   <action name="actionLoadNetwork">
    <property name="text">
-    <string>Load Network</string>
+    <string>Load Network...</string>
    </property>
   </action>
   <action name="actionNewEntry">

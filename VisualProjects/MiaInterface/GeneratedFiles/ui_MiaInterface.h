@@ -91,8 +91,8 @@ public:
     void retranslateUi(QMainWindow *MiaInterfaceClass)
     {
         MiaInterfaceClass->setWindowTitle(QApplication::translate("MiaInterfaceClass", "MiaInterface", Q_NULLPTR));
-        actionNewNetwork->setText(QApplication::translate("MiaInterfaceClass", "New Network", Q_NULLPTR));
-        actionLoadNetwork->setText(QApplication::translate("MiaInterfaceClass", "Load Network", Q_NULLPTR));
+        actionNewNetwork->setText(QApplication::translate("MiaInterfaceClass", "New Network...", Q_NULLPTR));
+        actionLoadNetwork->setText(QApplication::translate("MiaInterfaceClass", "Load Network...", Q_NULLPTR));
         actionNewEntry->setText(QApplication::translate("MiaInterfaceClass", "New Entry", Q_NULLPTR));
         askMiaButton->setText(QApplication::translate("MiaInterfaceClass", "What's this ?", Q_NULLPTR));
         menuFile->setTitle(QApplication::translate("MiaInterfaceClass", "File", Q_NULLPTR));
